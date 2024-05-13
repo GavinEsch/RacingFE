@@ -1,0 +1,33 @@
+{% extends 'TimeBoards/base.html' %}
+
+{% block content %}
+<h1>Add Leaderboard Entry</h1>
+<form method="post" novalidate>
+    {% csrf_token %}
+    <div class="mb-3">
+        {{ form.track.label_tag }}
+        {{ form.track }}
+    </div>
+    <div class="mb-3">
+        {{ form.car.label_tag }}
+        {{ form.car }}
+    </div>
+    <div class="mb-3">
+        {{ form.user.label_tag }}
+        {{ form.user }}
+    </div>
+    <div class="mb-3">
+        {{ form.minutes.label_tag }}
+        {{ form.minutes }}
+    </div>
+    <div class="mb-3">
+        {{ form.seconds.label_tag }}
+        {{ form.seconds }}
+    </div>
+    <div class="mb-3">
+        {{ form.milliseconds.label_tag }}
+        {{ form.milliseconds }}
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}

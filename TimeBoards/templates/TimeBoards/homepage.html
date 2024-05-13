@@ -1,0 +1,26 @@
+{% extends 'TimeBoards/base.html' %}
+{% block content %}
+<h1>RacingFE Leaderboard</h1>
+<table>
+    <tr>
+        <th>User</th>
+        <th>Game</th>
+        <th>Track</th>
+        <th>Car</th>
+        <th>Time</th>
+        <th>Next Closest Time</th>
+        <th>Difference</th>
+    </tr>
+    {% for entry in entries %}
+    <tr>
+        <td>{{ entry.user }}</td>
+        <td>{{ entry.track.game.name }}</td>
+        <td>{{ entry.track.name }}</td>
+        <td>{{ entry.car.name }}</td>
+        <td>{{ entry.formatted_time }}</td>
+        <td>{{ entry.display_next_closest_time }}</td>
+        <td>{{ entry.display_difference }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

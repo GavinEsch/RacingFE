@@ -1,0 +1,29 @@
+body {
+    background-color: #f8f9fa; /* Light grey background */
+    color: #333; /* Dark grey text */
+    font-family: 'Arial', sans-serif; /* Ensuring a clean, readable font is used */
+}
+
+h1 {
+    color: #007bff; /* Bootstrap primary blue for headers */
+    text-align: center; /* Center-aligning the header */
+}
+
+table {
+    width: 100%; /* Full-width tables */
+    border-collapse: collapse; /* Ensures borders between cells are merged */
+}
+
+th, td {
+    border: 1px solid #dee2e6; /* Light grey border for table cells */
+    padding: 8px; /* Padding inside cells for text */
+    text-align: left; /* Left-align text in cells */
+}
+
+th {
+    background-color: #e9ecef; /* Slightly darker grey for header cells */
+}
+
+.navbar {
+    margin-bottom: 20px; /* Space below the navbar */
+}
