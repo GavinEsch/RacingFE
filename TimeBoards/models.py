@@ -43,12 +43,15 @@ class LeaderboardEntry(models.Model):
     @property
     def difference(self):
         next_time = self.next_closest_time
-        return next_time - self.time if next_time else timedelta(0)
+        if next_time:
+            return abs(next_time - self.time)
+        return timedelta(0)
 
     @property
     def formatted_time(self):
         """Returns the time as a formatted string."""
         return self.format_duration(self.time)
+    
 
     @staticmethod
     def format_duration(duration):
