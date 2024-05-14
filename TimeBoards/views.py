@@ -2,8 +2,9 @@
 
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import LeaderboardEntry, Track, Car, Game, Person
-from .forms import LeaderboardEntryForm
+from .forms import LeaderboardEntryForm, GameForm, AddTrackForm, PersonForm
 from datetime import timedelta
+import json
 
 def homepage(request):
     # Fetching the fastest time for each track and car combination
@@ -83,17 +84,60 @@ def tracks(request, game_id):
     game = get_object_or_404(Game, id=game_id)
     tracks = Track.objects.filter(game=game)
     tracks_with_cars = []
+
     for track in tracks:
         cars = Car.objects.filter(game=game, track=track)
         for car in cars:
             tracks_with_cars.append((track, car))
-    return render(request, 'TimeBoards/tracks.html', {'game': game, 'tracks_with_cars': tracks_with_cars})
+
+    if request.method == 'POST':
+        form = AddTrackForm(request.POST)
+        if form.is_valid():
+            track_name = form.cleaned_data['track_name']
+            car_name = form.cleaned_data['car_name']
+
+            track = Track.objects.create(name=track_name, game=game)
+            car = Car.objects.create(name=car_name, game=game, track=track)
+            return redirect('tracks', game_id=game.id)
+    else:
+        form = AddTrackForm()
+
+    # Ensure game.settings is a dictionary
+    game_settings = json.loads(game.settings) if isinstance(game.settings, str) else game.settings
+
+    # Access the nested 'gameSettings' key
+    game_settings = game_settings.get('gameSettings', {})
+
+    return render(request, 'TimeBoards/tracks.html', {
+        'game': game,
+        'tracks_with_cars': tracks_with_cars,
+        'form': form,
+        'game_settings': game_settings
+    })
 
 def people(request):
     all_people = Person.objects.all()
-    return render(request, 'TimeBoards/people.html', {'people': all_people})
+    if request.method == 'POST':
+        form = PersonForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('people')  # Redirect to the same page to show the updated list
+    else:
+        form = PersonForm()
+    return render(request, 'TimeBoards/people.html', {'people': all_people, 'form': form})
 
 def person_times(request, person_id):
     person = get_object_or_404(Person, id=person_id)
     times = LeaderboardEntry.objects.filter(user=person).order_by('time')
     return render(request, 'TimeBoards/person_times.html', {'person': person, 'times': times})
+
+def games(request):
+    if request.method == 'POST':
+        form = GameForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('games')  # Redirect to the same page to show the updated list
+    else:
+        form = GameForm()
+    games = Game.objects.all()
+    return render(request, 'TimeBoards/games.html', {'games': games, 'form': form})

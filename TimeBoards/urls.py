@@ -12,4 +12,5 @@ urlpatterns = [
     path('games/<int:game_id>/tracks/<int:track_id>/car/<int:car_id>/times/', views.track_times, name='track_times'),
     path('people/<int:person_id>/', views.person_times, name='person_times'),
     path('people/', views.people, name='people'),
+    
 ]

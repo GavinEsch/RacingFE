@@ -62,12 +62,8 @@ class LeaderboardEntry(models.Model):
 
     @property
     def formatted_time(self):
-        """Returns the time as a formatted string."""
-        total_seconds = int(self.time.total_seconds())
-        minutes = total_seconds // 60
-        seconds = total_seconds % 60
-        milliseconds = self.time.microseconds // 1000
-        return f"{minutes:02}:{seconds:02}:{milliseconds:03}"
+        """Returns the time as a formatted string using the static method."""
+        return LeaderboardEntry.format_duration(self.time)
 
     @property
     def next_closest_time(self):
@@ -82,14 +78,14 @@ class LeaderboardEntry(models.Model):
     def difference(self):
         next_time = self.next_closest_time
         if next_time:
-            return abs(next_time - self.time)
-        return timedelta(0)
+            return LeaderboardEntry.format_duration(abs(next_time - self.time))
+        return "00:00:000"  # Return a default formatted string for no difference
 
     @staticmethod
     def format_duration(duration):
         """Converts timedelta to a formatted string."""
         if not duration:
-            return ""
+            return "00:00:000"
         total_seconds = int(duration.total_seconds())
         minutes = total_seconds // 60
         seconds = total_seconds % 60

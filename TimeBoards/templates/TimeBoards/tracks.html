@@ -1,24 +1,81 @@
 {% extends 'TimeBoards/base.html' %}
+{% load json_extras %}
+
 {% block content %}
-<h1>Tracks for {{ game.name }}</h1>
-<table>
-    <thead>
-        <tr>
-            <th>Track Name</th>
-            <th>Car</th>
-            <th>View Times</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for track, car in tracks_with_cars %}
-        <tr>
-            <td>{{ track.name }}</td>
-            <td>{{ car.name }}</td>
-            <td>
-                <a href="{% url 'track_times' game.id track.id car.id %}" class="btn btn-primary">View Times</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<style>
+    #game-json {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        border: 1px solid #dee2e6;
+        margin-bottom: 20px;
+    }
+    #game-json ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+    #game-json li {
+        margin-bottom: 3px;
+    }
+</style>
+<div class="row">
+    <div class="col-md-8">
+        <h1>Tracks for {{ game.name }}</h1>
+        <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#addTrackModal">Add Track</button>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Track Name</th>
+                    <th>Car</th>
+                    <th>View Times</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for track, car in tracks_with_cars %}
+                <tr>
+                    <td>{{ track.name }}</td>
+                    <td>{{ car.name }}</td>
+                    <td>
+                        <a href="{% url 'track_times' game.id track.id car.id %}" class="btn btn-primary">View Times</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-4">
+        <h2>Game Details</h2>
+        <div id="game-json">
+            <div><strong>ID:</strong> {{ game.id }}</div>
+            <div><strong>Name:</strong> {{ game.name }}</div>
+            <div><strong>Game Settings:</strong></div>
+            <div>{{ game_settings|render_json|safe }}</div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for adding a track -->
+<div class="modal fade" id="addTrackModal" tabindex="-1" role="dialog" aria-labelledby="addTrackModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTrackModalLabel">Add Track</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'tracks' game.id %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Add Track</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

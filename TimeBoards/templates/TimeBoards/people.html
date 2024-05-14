@@ -2,6 +2,7 @@
 
 {% block content %}
 <h1>People</h1>
+<button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#addPersonModal">Add Person</button>
 <ul class="list-group">
     {% for person in people %}
     <li class="list-group-item">
@@ -9,4 +10,28 @@
     </li>
     {% endfor %}
 </ul>
+
+<!-- Modal for adding a person -->
+<div class="modal fade" id="addPersonModal" tabindex="-1" role="dialog" aria-labelledby="addPersonModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPersonModalLabel">Add Person</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'people' %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Add Person</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

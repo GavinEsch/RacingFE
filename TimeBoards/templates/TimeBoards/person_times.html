@@ -6,6 +6,7 @@
     <thead>
         <tr>
             <th>Track</th>
+            <th>Game</th>
             <th>Car</th>
             <th>Time</th>
         </tr>
@@ -14,6 +15,7 @@
         {% for entry in times %}
         <tr>
             <td>{{ entry.track.name }}</td>
+            <td>{{ entry.track.game.name }}</td>
             <td>{{ entry.car.name }}</td>
             <td>{{ entry.formatted_time }}</td>
         </tr>

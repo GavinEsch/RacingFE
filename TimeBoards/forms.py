@@ -1,7 +1,7 @@
 # forms.py
 
 from django import forms
-from .models import LeaderboardEntry, Person
+from .models import LeaderboardEntry, Person, Game
 from datetime import timedelta
 
 class LeaderboardEntryForm(forms.ModelForm):
@@ -30,3 +30,21 @@ class LeaderboardEntryForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
+
+class GameForm(forms.ModelForm):
+    class Meta:
+        model = Game
+        fields = ['name', 'settings']  # Adjust fields as necessary
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'settings': forms.Textarea(attrs={'class': 'form-control', 'rows': 3})
+        }
+
+class AddTrackForm(forms.Form):
+    track_name = forms.CharField(label='Track Name', max_length=100)
+    car_name = forms.CharField(label='Car Name', max_length=100)
+
+class PersonForm(forms.ModelForm):
+    class Meta:
+        model = Person
+        fields = ['name']
