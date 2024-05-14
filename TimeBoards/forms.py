@@ -1,14 +1,7 @@
-from django import forms
-from .models import LeaderboardEntry, Track, Car
-from datetime import timedelta
-
-from django import forms
-from .models import LeaderboardEntry
-
 # forms.py
+
 from django import forms
-from django.core.exceptions import ValidationError
-from .models import LeaderboardEntry
+from .models import LeaderboardEntry, Person
 from datetime import timedelta
 
 class LeaderboardEntryForm(forms.ModelForm):
@@ -18,11 +11,9 @@ class LeaderboardEntryForm(forms.ModelForm):
 
     class Meta:
         model = LeaderboardEntry
-        fields = ['track', 'car', 'user', 'minutes', 'seconds', 'milliseconds']
+        fields = ['user', 'minutes', 'seconds', 'milliseconds']
         widgets = {
-            'track': forms.Select(attrs={'class': 'form-select'}),
-            'car': forms.Select(attrs={'class': 'form-select'}),
-            'user': forms.TextInput(attrs={'class': 'form-control'})
+            'user': forms.Select(attrs={'class': 'form-select'}),
         }
 
     def clean(self):
@@ -39,4 +30,3 @@ class LeaderboardEntryForm(forms.ModelForm):
         if commit:
             instance.save()
         return instance
-

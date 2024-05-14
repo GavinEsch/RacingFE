@@ -1,0 +1,17 @@
+{% extends 'TimeBoards/base.html' %}
+
+{% block content %}
+<h1>Games</h1>
+<div class="row">
+    {% for game in games %}
+    <div class="col-md-4">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">{{ game.name }}</h5>
+                <a href="{% url 'tracks' game.id %}" class="btn btn-primary">View Tracks</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

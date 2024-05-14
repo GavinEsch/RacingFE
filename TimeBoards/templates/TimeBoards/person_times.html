@@ -1,0 +1,23 @@
+{% extends 'TimeBoards/base.html' %}
+
+{% block content %}
+<h1>Times for {{ person.name }}</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Track</th>
+            <th>Car</th>
+            <th>Time</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in times %}
+        <tr>
+            <td>{{ entry.track.name }}</td>
+            <td>{{ entry.car.name }}</td>
+            <td>{{ entry.formatted_time }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'TimeBoards/base.html' %}
+
+{% block content %}
+<h1>People</h1>
+<ul class="list-group">
+    {% for person in people %}
+    <li class="list-group-item">
+        <a href="{% url 'person_times' person.id %}">{{ person.name }}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'TimeBoards/base.html' %}
+
+{% block content %}
+<h1>Times for {{ track.name }} in {{ game.name }} with {{ car.name }}</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Time</th>
+            <th>Next Closest Time</th>
+            <th>Difference</th>
+            <th>Logged At</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in times %}
+        <tr>
+            <td>{{ entry.user.name }}</td>
+            <td>{{ entry.formatted_time }}</td>
+            <td>{{ entry.next_closest_time}}</td>
+            <td>{{ entry.difference }}</td>
+            <td>{{ entry.logged_at|date:"Y-m-d H:i:s" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Button to trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entryModal">
+  Add Time
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="entryModal" tabindex="-1" aria-labelledby="entryModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="entryModalLabel">Add Leaderboard Entry</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" id="entryForm">
+          {% csrf_token %}
+          {{ form.non_field_errors }}
+          <div class="mb-3">
+            <label for="id_user" class="form-label">User</label>
+            {{ form.user }}
+          </div>
+          <div class="mb-3">
+            <label for="id_minutes" class="form-label">Minutes</label>
+            {{ form.minutes }}
+          </div>
+          <div class="mb-3">
+            <label for="id_seconds" class="form-label">Seconds</label>
+            {{ form.seconds }}
+          </div>
+          <div class="mb-3">
+            <label for="id_milliseconds" class="form-label">Milliseconds</label>
+            {{ form.milliseconds }}
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" form="entryForm">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+<!-- Include Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>

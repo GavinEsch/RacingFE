@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Game, Track, Car, LeaderboardEntry
+from .models import Game, Track, Car, LeaderboardEntry, Person
 
 # Admin for Game Model
 class GameAdmin(admin.ModelAdmin):
@@ -17,9 +17,17 @@ class TrackAdmin(admin.ModelAdmin):
 class CarAdmin(admin.ModelAdmin):
     list_display = ('name', 'game')
 
+# Admin for Person Model
+class PersonAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+
 # Admin for LeaderboardEntry Model
 class LeaderboardEntryAdmin(admin.ModelAdmin):
     list_display = ('track', 'car', 'user', 'formatted_time', 'display_next_closest_time', 'display_difference')
+
+    def formatted_time(self, obj):
+        return obj.formatted_time
+    formatted_time.short_description = 'Time'
 
     def display_next_closest_time(self, obj):
         next_time = obj.next_closest_time
@@ -35,4 +43,5 @@ class LeaderboardEntryAdmin(admin.ModelAdmin):
 admin.site.register(Game, GameAdmin)
 admin.site.register(Track, TrackAdmin)
 admin.site.register(Car, CarAdmin)
+admin.site.register(Person, PersonAdmin)
 admin.site.register(LeaderboardEntry, LeaderboardEntryAdmin)

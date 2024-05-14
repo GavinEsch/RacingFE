@@ -1,0 +1,24 @@
+{% extends 'TimeBoards/base.html' %}
+{% block content %}
+<h1>Tracks for {{ game.name }}</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Track Name</th>
+            <th>Car</th>
+            <th>View Times</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for track, car in tracks_with_cars %}
+        <tr>
+            <td>{{ track.name }}</td>
+            <td>{{ car.name }}</td>
+            <td>
+                <a href="{% url 'track_times' game.id track.id car.id %}" class="btn btn-primary">View Times</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
