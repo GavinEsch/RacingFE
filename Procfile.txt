@@ -1,1 +1,0 @@
-web: gunicorn racingfe.wsgi --log-file -
