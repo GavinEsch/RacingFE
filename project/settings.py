@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'TimeBoards',
 ]
 
+
+#test
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
