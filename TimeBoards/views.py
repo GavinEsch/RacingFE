@@ -130,7 +130,7 @@ def person_times(request, person_id):
     person = get_object_or_404(Person, id=person_id)
     times = LeaderboardEntry.objects.filter(user=person).order_by('time')
     return render(request, 'TimeBoards/person_times.html', {'person': person, 'times': times})
-
+#games
 def games(request):
     if request.method == 'POST':
         form = GameForm(request.POST)

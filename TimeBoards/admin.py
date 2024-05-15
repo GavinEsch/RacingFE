@@ -13,7 +13,7 @@ class GameAdmin(admin.ModelAdmin):
 class TrackAdmin(admin.ModelAdmin):
     list_display = ('name', 'game')
 
-
+#caradmin
 class CarAdmin(admin.ModelAdmin):
     list_display = ('name', 'game')
 
