@@ -2,27 +2,10 @@
 {% load json_extras %}
 
 {% block content %}
-<style>
-    #game-json {
-        background-color: #f8f9fa;
-        padding: 15px;
-        border-radius: 5px;
-        border: 1px solid #dee2e6;
-        margin-bottom: 20px;
-    }
-    #game-json ul {
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-    }
-    #game-json li {
-        margin-bottom: 3px;
-    }
-</style>
 <div class="row">
     <div class="col-md-8">
         <h1>Tracks for {{ game.name }}</h1>
-        <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#addTrackModal">Add Track</button>
+        <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addTrackModal">Add Track</button>
         <table class="table">
             <thead>
                 <tr>
@@ -55,15 +38,12 @@
     </div>
 </div>
 
-<!-- Modal for adding a track -->
 <div class="modal fade" id="addTrackModal" tabindex="-1" role="dialog" aria-labelledby="addTrackModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addTrackModalLabel">Add Track</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form method="post" action="{% url 'tracks' game.id %}">
@@ -71,7 +51,7 @@
                     {{ form.as_p }}
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Add Track</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </form>
             </div>

@@ -121,7 +121,7 @@ def people(request):
         form = PersonForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('people')  # Redirect to the same page to show the updated list
+            return redirect('people') 
     else:
         form = PersonForm()
     return render(request, 'TimeBoards/people.html', {'people': all_people, 'form': form})
@@ -136,7 +136,7 @@ def games(request):
         form = GameForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('games')  # Redirect to the same page to show the updated list
+            return redirect('games') 
     else:
         form = GameForm()
     games = Game.objects.all()

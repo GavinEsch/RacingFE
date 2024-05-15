@@ -1,29 +1,104 @@
 body {
-    background-color: #f8f9fa; /* Light grey background */
-    color: #333; /* Dark grey text */
+    background-color: #f0f4f8; /* Very light grey background */
+    color: #2c3e50; /* Dark blue-grey text */
     font-family: 'Arial', sans-serif; /* Ensuring a clean, readable font is used */
 }
 
 h1 {
-    color: #007bff; /* Bootstrap primary blue for headers */
+    color: #1abc9c; /* Teal for headers */
     text-align: center; /* Center-aligning the header */
+    margin-bottom: 20px; /* Adding some space below the header */
 }
 
 table {
     width: 100%; /* Full-width tables */
     border-collapse: collapse; /* Ensures borders between cells are merged */
+    margin-bottom: 20px; /* Space below the table */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Adding subtle shadow */
 }
 
 th, td {
     border: 1px solid #dee2e6; /* Light grey border for table cells */
-    padding: 8px; /* Padding inside cells for text */
+    padding: 12px; /* Padding inside cells for text */
     text-align: left; /* Left-align text in cells */
 }
 
 th {
-    background-color: #e9ecef; /* Slightly darker grey for header cells */
+    background-color: #e3f1f4; /* Light teal for header cells */
+    color: #2c3e50; /* Dark blue-grey text for header cells */
+}
+
+tr:nth-child(even) {
+    background-color: #f0f4f8; /* Alternate row color for better readability */
 }
 
 .navbar {
     margin-bottom: 20px; /* Space below the navbar */
+}
+
+.navbar-brand {
+    color: #fff !important; /* Ensure brand text is white */
+}
+
+.nav-link {
+    color: #bdc3c7 !important; /* Light grey nav links */
+}
+
+.nav-link.active {
+    color: #fff !important; /* White color for active nav link */
+}
+
+.container {
+    margin-top: 20px; /* Space at the top of the container */
+}
+
+.btn-primary {
+    background-color: #e67e22; /* Orange for primary buttons */
+    border-color: #e67e22; /* Orange for primary buttons */
+}
+
+.btn-secondary {
+    background-color: #34495e; /* Dark blue-grey for secondary buttons */
+    border-color: #34495e; /* Dark blue-grey for secondary buttons */
+}
+
+.modal-header {
+    background-color: #1abc9c; /* Teal for modal header */
+    color: #fff; /* White text for modal header */
+}
+
+.modal-header .btn-close {
+    color: #fff; /* White close button */
+}
+
+.modal-footer .btn-secondary {
+    background-color: #34495e; /* Dark blue-grey for modal footer */
+}
+
+#game-json {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Adding subtle shadow */
+}
+
+#game-json ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#game-json li {
+    margin-bottom: 3px;
+}
+
+.card {
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Adding subtle shadow */
+}
+
+.card-title {
+    color: #1abc9c; /* Teal for card titles */
 }
