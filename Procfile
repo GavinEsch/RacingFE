@@ -1,1 +1,1 @@
-web: gunicorn racingfe.wsgi
+web: gunicorn project.wsgi
