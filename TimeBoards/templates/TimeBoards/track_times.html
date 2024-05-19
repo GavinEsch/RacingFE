@@ -1,68 +1,107 @@
 {% extends 'TimeBoards/base.html' %}
+{% load form_tags %}
 
 {% block content %}
-<h1>Times for {{ track.name }} in {{ game.name }} with {{ car.name }}</h1>
-<table class="table">
-    <thead>
-        <tr>
-            <th>User</th>
-            <th>Time</th>
-            <th>Next Closest Time</th>
-            <th>Difference</th>
-            <th>Logged At</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for entry in times %}
-        <tr>
-            <td>{{ entry.user.name }}</td>
-            <td>{{ entry.formatted_time }}</td>
-            <td>{{ entry.next_closest_time }}</td>
-            <td>{{ entry.difference }}</td>
-            <td>{{ entry.logged_at|date:"Y-m-d H:i:s" }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="container mt-5">
+    <h1 class="mb-4">Times for {{ track.name }} in {{ game.name }} with {{ car.name }}</h1>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>User</th>
+                    <th>Time</th>
+                    <th>Next Closest Time</th>
+                    <th>Difference</th>
+                    <th>Logged At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in times %}
+                <tr>
+                    <td>{{ entry.user.username }}</td>
+                    <td>{{ entry.formatted_time }}</td>
+                    <td>{{ entry.next_closest_time }}</td>
+                    <td>{{ entry.difference }}</td>
+                    <td>{{ entry.logged_at|date:"Y-m-d H:i:s" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#entryModal">
+        Add Time
+    </button>
 
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#entryModal">
-    Add Time
-</button>
-
-<div class="modal fade" id="entryModal" tabindex="-1" aria-labelledby="entryModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="entryModalLabel">Add Leaderboard Entry</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form method="post" id="entryForm">
-                    {% csrf_token %}
-                    {{ form.non_field_errors }}
-                    <div class="mb-3">
-                        <label for="id_user" class="form-label">User</label>
-                        {{ form.user }}
-                    </div>
-                    <div class="mb-3">
-                        <label for="id_minutes" class="form-label">Minutes</label>
-                        {{ form.minutes }}
-                    </div>
-                    <div class="mb-3">
-                        <label for="id_seconds" class="form-label">Seconds</label>
-                        {{ form.seconds }}
-                    </div>
-                    <div class="mb-3">
-                        <label for="id_milliseconds" class="form-label">Milliseconds</label>
-                        {{ form.milliseconds }}
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary" form="entryForm">Save changes</button>
+    <div class="modal fade" id="entryModal" tabindex="-1" aria-labelledby="entryModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="entryModalLabel">Add Leaderboard Entry</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="post" id="entryForm">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+                        <div class="mb-3">
+                            <label for="id_user" class="form-label">User</label>
+                            {{ form.user|add_class:"form-select" }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_minutes" class="form-label">Minutes</label>
+                            {{ form.minutes|add_class:"form-control" }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_seconds" class="form-label">Seconds</label>
+                            {{ form.seconds|add_class:"form-control" }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_milliseconds" class="form-label">Milliseconds</label>
+                            {{ form.milliseconds|add_class:"form-control" }}
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" form="entryForm">Save changes</button>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Include Bootstrap JavaScript and dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybBogGzA1U5Kde1mFU4fR9MQ5rWg6kQEO1A7B8bcl2Jv0yP4h" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js" integrity="sha384-IQsoLXl7ATjCUaB6CXi7tPYGK8D5w//FfLuhD4eS2pUjQpi9bxD2b5H4iM0cklSO" crossorigin="anonymous"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const entryForm = document.getElementById('entryForm');
+
+    entryForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        fetch('{% url "track_times" game.id track.id car.id %}', {
+            method: 'POST',
+            body: new FormData(entryForm),
+            headers: {
+                'X-CSRFToken': entryForm.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        }).then(response => {
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                return response.text().then(text => {
+                    console.error('Error:', text);
+                    alert('There was an error saving the entry.');
+                });
+            }
+        }).catch(error => {
+            console.error('Fetch error:', error);
+            alert('There was an error saving the entry.');
+        });
+    });
+});
+</script>
 {% endblock %}

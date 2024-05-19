@@ -1,0 +1,31 @@
+{% extends 'TimeBoards/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Add Event</h1>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ form.name.label_tag }}
+            {{ form.name|add_class:"form-control" }}
+        </div>
+        <div class="mb-3">
+            {{ form.description.label_tag }}
+            {{ form.description|add_class:"form-control" }}
+        </div>
+        <div class="mb-3">
+            {{ form.game.label_tag }}
+            {{ form.game|add_class:"form-select" }}
+        </div>
+        <div class="mb-3">
+            {{ form.start_time.label_tag }}
+            {{ form.start_time|add_class:"form-control" }}
+        </div>
+        <div class="mb-3">
+            {{ form.end_time.label_tag }}
+            {{ form.end_time|add_class:"form-control" }}
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock %}

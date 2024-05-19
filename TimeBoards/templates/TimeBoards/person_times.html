@@ -1,25 +1,72 @@
 {% extends 'TimeBoards/base.html' %}
-
+{% load static %}
 {% block content %}
-<h1>Times for {{ person.name }}</h1>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Track</th>
-            <th>Game</th>
-            <th>Car</th>
-            <th>Time</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for entry in times %}
-        <tr>
-            <td>{{ entry.track.name }}</td>
-            <td>{{ entry.track.game.name }}</td>
-            <td>{{ entry.car.name }}</td>
-            <td>{{ entry.formatted_time }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    {% if person.profile_picture %}
+                        <img src="{{ person.profile_picture.url }}" class="rounded-circle mb-3" alt="User Image" width="150">
+                    {% else %}
+                        <img src="{% static 'TimeBoards/photos/default_profile_picture.png' %}" class="rounded-circle mb-3" alt="Default User Image" width="150">
+                    {% endif %}
+                    <h3 class="card-title">{{ person.username }}</h3>
+                    <p class="card-text">{{ person.bio|default:"No bio available." }}</p>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header">Achievements</div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        {% for achievement in person.achievement_set.all %}
+                        <li><i class="fas fa-trophy"></i> {{ achievement.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header">Sessions</div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        {% for session in person.session_set.all %}
+                        <li>{{ session }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h1 class="card-title">Leaderboard Entries</h1>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Track</th>
+                                    <th>Game</th>
+                                    <th>Car</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for entry in times %}
+                                <tr>
+                                    <td>{{ entry.track.name }}</td>
+                                    <td>{{ entry.track.game.name }}</td>
+                                    <td>{{ entry.car.name }}</td>
+                                    <td>{{ entry.formatted_time }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

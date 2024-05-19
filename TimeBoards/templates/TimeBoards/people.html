@@ -2,11 +2,11 @@
 
 {% block content %}
 <h1>People</h1>
-<button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#addPersonModal">Add Person</button>
+<button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addPersonModal">Add Person</button>
 <ul class="list-group">
     {% for person in people %}
     <li class="list-group-item">
-        <a href="{% url 'person_times' person.id %}">{{ person.name }}</a>
+        <a href="{% url 'person_times' person.id %}">{{ person.username }}</a>
     </li>
     {% endfor %}
 </ul>
@@ -16,17 +16,15 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addPersonModalLabel">Add Person</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="post" action="{% url 'people' %}">
+                <form method="post" action="{% url 'people' %}" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form.as_p }}
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Add Person</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </form>
             </div>

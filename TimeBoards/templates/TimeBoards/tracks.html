@@ -6,6 +6,7 @@
     <div class="col-md-8">
         <h1>Tracks for {{ game.name }}</h1>
         <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addTrackModal">Add Track</button>
+        <button type="button" class="btn btn-secondary mb-3" data-bs-toggle="modal" data-bs-target="#addCarModal">Add Car</button>
         <table class="table">
             <thead>
                 <tr>
@@ -26,6 +27,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        <p>Total tracks: {{ tracks_with_cars|length }}</p>
     </div>
     <div class="col-md-4">
         <h2>Game Details</h2>
@@ -38,6 +40,7 @@
     </div>
 </div>
 
+<!-- Add Track Modal -->
 <div class="modal fade" id="addTrackModal" tabindex="-1" role="dialog" aria-labelledby="addTrackModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -46,11 +49,33 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="post" action="{% url 'tracks' game.id %}">
+                <form method="post" action="{% url 'tracks' game.id %}" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form.as_p }}
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Add Track</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Car Modal -->
+<div class="modal fade" id="addCarModal" tabindex="-1" role="dialog" aria-labelledby="addCarModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCarModalLabel">Add Car</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'add_car' game.id %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ car_form.as_p }}
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Add Car</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     </div>
                 </form>

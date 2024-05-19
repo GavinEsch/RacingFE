@@ -1,50 +1,108 @@
-# views.py
-
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import LeaderboardEntry, Track, Car, Game, Person
-from .forms import LeaderboardEntryForm, GameForm, AddTrackForm, PersonForm
-from datetime import timedelta
+from .models import (LeaderboardEntry, Track, Car, Game, User, Session, Attempt, TelemetryData, Achievement, Comment, Event, Rating, UserAchievement)
+from .forms import (LeaderboardEntryForm, GameForm, TrackForm, CarForm, SessionForm, AttemptForm, TelemetryDataForm, AchievementForm, UserAchievementForm, CommentForm, EventForm, RatingForm)
+from django.contrib.auth.forms import UserCreationForm
+from .forms import CustomUserCreationForm 
+
 import json
+from datetime import timedelta
+from django.conf import settings
 
 def homepage(request):
-    # Fetching the fastest time for each track and car combination
-    entries = LeaderboardEntry.objects.all().select_related('track', 'car', 'game').order_by('track', 'car', 'time')
+    entries = LeaderboardEntry.objects.all().select_related('track', 'car', 'game', 'user').order_by('track', 'car', 'time')
     top_times = {}
-
     for entry in entries:
         key = (entry.track, entry.car, entry.game)
         if key not in top_times:
             top_times[key] = entry
-
     return render(request, 'TimeBoards/homepage.html', {'entries': top_times.values()})
 
-def track_leaderboard(request, track_id, car_id):
-    # Fetching the fastest times for a specific track and car combination
-    entries = LeaderboardEntry.objects.filter(track_id=track_id, car_id=car_id).select_related('car', 'game').order_by('time')[:10]
-    track = Track.objects.get(id=track_id)
-    car = Car.objects.get(id=car_id)
-    return render(request, 'TimeBoards/track_leaderboard.html', {'track': track, 'car': car, 'entries': entries})
-
-def car_leaderboard(request, car_id):
-    # Fetching the fastest times for a specific car across all tracks
-    entries = LeaderboardEntry.objects.filter(car_id=car_id).select_related('track', 'game').order_by('time')[:10]
-    car = Car.objects.get(id=car_id)
-    return render(request, 'TimeBoards/car_leaderboard.html', {'car': car, 'entries': entries})
-
-def add_leaderboard_entry(request):
+def games(request):
     if request.method == 'POST':
-        form = LeaderboardEntryForm(request.POST)
+        form = GameForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('homepage')  # Adjust the redirect as necessary
+            return redirect('games')
     else:
-        form = LeaderboardEntryForm()
-    return render(request, 'TimeBoards/add_leaderboard_entry.html', {'form': form})
+        form = GameForm()
+    games = Game.objects.all()
+    return render(request, 'TimeBoards/games.html', {'games': games, 'form': form})
+
+def tracks(request, game_id):
+    game = get_object_or_404(Game, id=game_id)
+    tracks = Track.objects.filter(game=game)
+    tracks_with_cars = []
+
+    for track in tracks:
+        car = track.cars.first()  # Assuming one car per track
+        if car:
+            tracks_with_cars.append((track, car))
+
+    if request.method == 'POST':
+        form = TrackForm(request.POST, request.FILES)
+        if form.is_valid():
+            track = form.save(commit=False)
+            track.game = game
+            track.save()
+            form.save_m2m()  # Save many-to-many relationships
+            return redirect('tracks', game_id=game.id)
+        else:
+            print(form.errors)  # Debug: Print form errors to console
+    else:
+        form = TrackForm()
+        car_form = CarForm()
+
+    game_settings = json.loads(game.settings) if isinstance(game.settings, str) else game.settings
+    game_settings = game_settings.get('gameSettings', {})
+
+    return render(request, 'TimeBoards/tracks.html', {
+        'game': game,
+        'tracks_with_cars': tracks_with_cars,
+        'form': form,
+        'car_form': car_form,
+        'game_settings': game_settings
+    })
+
+def add_car(request, game_id):
+    game = get_object_or_404(Game, id=game_id)
+    if request.method == 'POST':
+        form = CarForm(request.POST, request.FILES)
+        if form.is_valid():
+            car = form.save(commit=False)
+            car.game = game  # Associate the car with the game
+            car.save()
+            return redirect('tracks', game_id=game_id)
+        else:
+            print(form.errors)  # Debug: Print form errors to console
+    else:
+        form = CarForm()
+    return render(request, 'TimeBoards/add_car.html', {'form': form})
+
+def people(request):
+    all_people = User.objects.all()
+    print("All people:", all_people)  # Debug: Print all users to the console
+    print("Database config:", settings.DATABASES)
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('people')  # Redirect to refresh the page and show the new person
+        else:
+            print(form.errors)  # Debug: Print form errors to the console
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'TimeBoards/people.html', {'people': all_people, 'form': form})
+
+
+def person_times(request, person_id):
+    person = get_object_or_404(User, id=person_id)
+    times = LeaderboardEntry.objects.filter(user=person).order_by('time')
+    return render(request, 'TimeBoards/person_times.html', {'person': person, 'times': times})
 
 def track_times(request, game_id, track_id, car_id):
     game = get_object_or_404(Game, id=game_id)
     track = get_object_or_404(Track, id=track_id, game=game)
-    car = get_object_or_404(Car, id=car_id, game=game, track=track)
+    car = get_object_or_404(Car, id=car_id, game=game, tracks=track)
     times = LeaderboardEntry.objects.filter(track=track, car=car, game=game).order_by('time')
 
     if request.method == 'POST':
@@ -71,73 +129,61 @@ def track_times(request, game_id, track_id, car_id):
                 entry.save()
 
             return redirect('track_times', game_id=game_id, track_id=track_id, car_id=car_id)
+        else:
+            print(form.errors)  # Debug: Print form errors to console
     else:
         form = LeaderboardEntryForm()
 
     return render(request, 'TimeBoards/track_times.html', {'game': game, 'track': track, 'car': car, 'times': times, 'form': form})
 
-def games(request):
-    all_games = Game.objects.all()
-    return render(request, 'TimeBoards/games.html', {'games': all_games})
 
-def tracks(request, game_id):
-    game = get_object_or_404(Game, id=game_id)
-    tracks = Track.objects.filter(game=game)
-    tracks_with_cars = []
 
-    for track in tracks:
-        cars = Car.objects.filter(game=game, track=track)
-        for car in cars:
-            tracks_with_cars.append((track, car))
+def track_leaderboard(request, track_id):
+    track = get_object_or_404(Track, id=track_id)
+    entries = LeaderboardEntry.objects.filter(track=track).order_by('time')[:10]
+    return render(request, 'TimeBoards/track_leaderboard.html', {'track': track, 'entries': entries})
 
+def car_leaderboard(request, car_id):
+    car = get_object_or_404(Car, id=car_id)
+    entries = LeaderboardEntry.objects.filter(car=car).order_by('time')[:10]
+    return render(request, 'TimeBoards/car_leaderboard.html', {'car': car, 'entries': entries})
+
+def add_leaderboard_entry(request):
     if request.method == 'POST':
-        form = AddTrackForm(request.POST)
-        if form.is_valid():
-            track_name = form.cleaned_data['track_name']
-            car_name = form.cleaned_data['car_name']
-
-            track = Track.objects.create(name=track_name, game=game)
-            car = Car.objects.create(name=car_name, game=game, track=track)
-            return redirect('tracks', game_id=game.id)
-    else:
-        form = AddTrackForm()
-
-    # Ensure game.settings is a dictionary
-    game_settings = json.loads(game.settings) if isinstance(game.settings, str) else game.settings
-
-    # Access the nested 'gameSettings' key
-    game_settings = game_settings.get('gameSettings', {})
-
-    return render(request, 'TimeBoards/tracks.html', {
-        'game': game,
-        'tracks_with_cars': tracks_with_cars,
-        'form': form,
-        'game_settings': game_settings
-    })
-
-def people(request):
-    all_people = Person.objects.all()
-    if request.method == 'POST':
-        form = PersonForm(request.POST)
+        form = LeaderboardEntryForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('people') 
+            return redirect('homepage')
     else:
-        form = PersonForm()
-    return render(request, 'TimeBoards/people.html', {'people': all_people, 'form': form})
+        form = LeaderboardEntryForm()
+    return render(request, 'TimeBoards/add_leaderboard_entry.html', {'form': form})
 
-def person_times(request, person_id):
-    person = get_object_or_404(Person, id=person_id)
-    times = LeaderboardEntry.objects.filter(user=person).order_by('time')
-    return render(request, 'TimeBoards/person_times.html', {'person': person, 'times': times})
-#games
-def games(request):
+def add_event(request):
     if request.method == 'POST':
-        form = GameForm(request.POST)
+        form = EventForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('games') 
+            return redirect('homepage')
     else:
-        form = GameForm()
-    games = Game.objects.all()
-    return render(request, 'TimeBoards/games.html', {'games': games, 'form': form})
+        form = EventForm()
+    return render(request, 'TimeBoards/add_event.html', {'form': form})
+
+def add_rating(request):
+    if request.method == 'POST':
+        form = RatingForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('homepage')
+    else:
+        form = RatingForm()
+    return render(request, 'TimeBoards/add_rating.html', {'form': form})
+
+def add_comment(request):
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('homepage')
+    else:
+        form = CommentForm()
+    return render(request, 'TimeBoards/add_comment.html', {'form': form})

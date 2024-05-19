@@ -2,36 +2,36 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="mb-4">Add Leaderboard Entry</h1>
+    <h1 class="mb-4">Add Comment</h1>
     <form method="post" novalidate>
         {% csrf_token %}
         <div class="mb-3">
-            {{ form.track.label_tag }}
-            {{ form.track|add_class:"form-select" }}
-        </div>
-        <div class="mb-3">
-            {{ form.car.label_tag }}
-            {{ form.car|add_class:"form-select" }}
-        </div>
-        <div class="mb-3">
             {{ form.user.label_tag }}
             {{ form.user|add_class:"form-select" }}
+        </div>
+        <div class="mb-3">
+            {{ form.content.label_tag }}
+            {{ form.content|add_class:"form-control" }}
+        </div>
+        <div class="mb-3">
+            {{ form.track.label_tag }}
+            {{ form.track|add_class:"form-select" }}
         </div>
         <div class="mb-3">
             {{ form.game.label_tag }}
             {{ form.game|add_class:"form-select" }}
         </div>
         <div class="mb-3">
-            {{ form.minutes.label_tag }}
-            {{ form.minutes|add_class:"form-control" }}
+            {{ form.car.label_tag }}
+            {{ form.car|add_class:"form-select" }}
         </div>
         <div class="mb-3">
-            {{ form.seconds.label_tag }}
-            {{ form.seconds|add_class:"form-control" }}
+            {{ form.created_at.label_tag }}
+            {{ form.created_at|add_class:"form-control" }}
         </div>
         <div class="mb-3">
-            {{ form.milliseconds.label_tag }}
-            {{ form.milliseconds|add_class:"form-control" }}
+            {{ form.parent.label_tag }}
+            {{ form.parent|add_class:"form-select" }}
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
