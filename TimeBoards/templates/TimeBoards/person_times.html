@@ -4,18 +4,18 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-4">
-            <div class="card mb-4">
-                <div class="card-body text-center">
+            <div class="card mb-4 text-center profile-card">
+                <div class="card-body">
                     {% if person.profile_picture %}
-                        <img src="{{ person.profile_picture.url }}" class="rounded-circle mb-3" alt="User Image" width="150">
+                        <img src="{{ person.profile_picture.url }}" class="rounded-circle mb-3 profile-pic" alt="User Image">
                     {% else %}
-                        <img src="{% static 'TimeBoards/photos/default_profile_picture.png' %}" class="rounded-circle mb-3" alt="Default User Image" width="150">
+                        <img src="{% static 'TimeBoards/photos/default_profile_picture.png' %}" class="rounded-circle mb-3 profile-pic" alt="Default User Image">
                     {% endif %}
                     <h3 class="card-title">{{ person.username }}</h3>
                     <p class="card-text">{{ person.bio|default:"No bio available." }}</p>
                 </div>
             </div>
-            <div class="card mb-4">
+            <div class="card mb-4 achievements-card">
                 <div class="card-header">Achievements</div>
                 <div class="card-body">
                     <ul class="list-unstyled">
@@ -25,19 +25,23 @@
                     </ul>
                 </div>
             </div>
-            <div class="card mb-4">
-                <div class="card-header">Sessions</div>
+            <div class="card mb-4 sessions-card">
+                <div class="card-header">Sessions
+                    <button type="button" class="btn btn-primary btn-sm float-end" data-bs-toggle="modal" data-bs-target="#addSessionModal">Add Session</button>
+                </div>
                 <div class="card-body">
                     <ul class="list-unstyled">
                         {% for session in person.session_set.all %}
-                        <li>{{ session }}</li>
+                        <li>
+                            <a href="#" class="session-link" data-session-id="{{ session.id }}">{{ session.game.name }} - {{ session.end_time|date:"Y-m-d H:i:s" }}</a>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
             </div>
         </div>
         <div class="col-md-8">
-            <div class="card">
+            <div class="card leaderboard-card">
                 <div class="card-header">
                     <h1 class="card-title">Leaderboard Entries</h1>
                 </div>
@@ -69,4 +73,88 @@
         </div>
     </div>
 </div>
+
+<!-- Add Session Modal -->
+<div class="modal fade" id="addSessionModal" tabindex="-1" aria-labelledby="addSessionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addSessionModalLabel">Add Session</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'person_times' person.id %}" id="addSessionForm">
+                    {% csrf_token %}
+                    {{ session_form.as_p }}
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" form="addSessionForm">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Session Details Modal -->
+<div class="modal fade" id="sessionDetailsModal" tabindex="-1" aria-labelledby="sessionDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sessionDetailsModalLabel">Session Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Session details content will be loaded here dynamically -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Telemetry Data Modal -->
+<div class="modal fade" id="telemetryDataModal" tabindex="-1" aria-labelledby="telemetryDataModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="telemetryDataModalLabel">Telemetry Data</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Telemetry data content will be loaded here dynamically -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.session-link').forEach(function(element) {
+        element.addEventListener('click', function(event) {
+            event.preventDefault();
+            const sessionId = event.target.getAttribute('data-session-id');
+            fetch(`/session/${sessionId}/details/`)
+                .then(response => response.text())
+                .then(html => {
+                    document.querySelector('#sessionDetailsModal .modal-body').innerHTML = html;
+                    new bootstrap.Modal(document.getElementById('sessionDetailsModal')).show();
+                });
+        });
+    });
+
+    document.querySelectorAll('.telemetry-link').forEach(function(element) {
+        element.addEventListener('click', function(event) {
+            event.preventDefault();
+            const sessionId = event.target.getAttribute('data-session-id');
+            const trackId = event.target.getAttribute('data-track-id');
+            const carId = event.target.getAttribute('data-car-id');
+            fetch(`/session/${sessionId}/telemetry/${trackId}/${carId}/`)
+                .then(response => response.text())
+                .then(html => {
+                    document.querySelector('#telemetryDataModal .modal-body').innerHTML = html;
+                    new bootstrap.Modal(document.getElementById('telemetryDataModal')).show();
+                });
+        });
+    });
+});
+</script>
 {% endblock %}

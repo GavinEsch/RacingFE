@@ -1,5 +1,5 @@
 {% extends 'TimeBoards/base.html' %}
-
+{% load static %}
 {% block content %}
 <div class="container mt-5">
     <h1 class="mb-4">Games</h1>
@@ -32,6 +32,7 @@
         {% for game in games %}
         <div class="col-md-4 mb-4">
             <div class="card h-100">
+                <img src="{% static 'TimeBoards/photos/placeholder_game.webp' %}" class="card-img-top" alt="{{ game.name }}">
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">{{ game.name }}</h5>
                     <a href="{% url 'tracks' game.id %}" class="btn btn-primary mt-auto">View Tracks</a>

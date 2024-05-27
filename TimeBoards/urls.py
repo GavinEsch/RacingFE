@@ -15,4 +15,7 @@ urlpatterns = [
     path('add_rating/', views.add_rating, name='add_rating'),
     path('add_comment/', views.add_comment, name='add_comment'),
     path('games/<int:game_id>/add_car/', views.add_car, name='add_car'),
+    path('session/<int:session_id>/details/', views.session_details, name='session_details'),
+    path('add_session/<int:person_id>/', views.add_session, name='add_session'),
+    path('session/<int:session_id>/telemetry/<int:track_id>/<int:car_id>/', views.telemetry_data, name='telemetry_data'),
 ]

@@ -167,3 +167,12 @@ class CustomUserCreationForm(UserCreationForm):
             'preferences': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'profile_picture': forms.ClearableFileInput(attrs={'class': 'form-control'}),
         }
+        
+class SessionForm(forms.ModelForm):
+    class Meta:
+        model = Session
+        fields = ['game', 'end_time']
+        widgets = {
+            'game': forms.Select(attrs={'class': 'form-select'}),
+            'end_time': forms.DateTimeInput(attrs={'class': 'form-control', 'type': 'datetime-local'}),
+        }

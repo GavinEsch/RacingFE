@@ -19,7 +19,7 @@
             <tbody>
                 {% for entry in entries %}
                 <tr>
-                    <td>{{ entry.user.username }}</td>
+                    <td><img src="{{ entry.user.profile_picture.url }}" alt="{{ entry.user.username }}" class="profile-pic rounded-circle"> {{ entry.user.username }}</td>
                     <td>{{ entry.track.game.name }}</td>
                     <td>{{ entry.track.name }}</td>
                     <td>{{ entry.car.name }}</td>
@@ -31,5 +31,23 @@
             </tbody>
         </table>
     </div>
+
+    <h2 class="mt-5">Recent Sessions</h2>
+    <ul class="list-group">
+        {% for session in recent_sessions %}
+        <li class="list-group-item">
+            <strong>{{ session.user.username }}</strong> - {{ session.game.name }} ({{ session.end_time|date:"Y-m-d H:i:s" }})
+        </li>
+        {% endfor %}
+    </ul>
+
+    <h2 class="mt-5">Recent Achievements</h2>
+    <ul class="list-group">
+        {% for achievement in recent_achievements %}
+        <li class="list-group-item">
+            <strong>{{ achievement.user.username }}</strong> - {{ achievement.achievement.name }}
+        </li>
+        {% endfor %}
+    </ul>
 </div>
 {% endblock %}

@@ -1,12 +1,35 @@
 {% extends 'TimeBoards/base.html' %}
-
+{% load static %}
 {% block content %}
 <h1>People</h1>
-<button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addPersonModal">Add Person</button>
+<button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addPersonModal">Add Person</button>
 <ul class="list-group">
     {% for person in people %}
+    <li class="list-group-item d-flex align-items-center">
+        {% if person.profile_picture %}
+            <img src="{{ person.profile_picture.url }}" alt="{{ person.username }}" class="profile-pic rounded-circle">
+        {% else %}
+            <img src="{% static 'TimeBoards/photos/default_profile_picture.png' %}" alt="{{ person.username }}" class="profile-pic rounded-circle">
+        {% endif %}
+        <a href="{% url 'person_times' person.id %}" class="ms-3">{{ person.username }}</a>
+    </li>
+    {% endfor %}
+</ul>
+
+<h2 class="mt-5">Recent Achievements</h2>
+<ul class="list-group">
+    {% for achievement in recent_achievements %}
     <li class="list-group-item">
-        <a href="{% url 'person_times' person.id %}">{{ person.username }}</a>
+        <strong>{{ achievement.user.username }}</strong> - {{ achievement.achievement.name }}
+    </li>
+    {% endfor %}
+</ul>
+
+<h2 class="mt-5">Recent Sessions</h2>
+<ul class="list-group">
+    {% for session in recent_sessions %}
+    <li class="list-group-item">
+        <strong>{{ session.user.username }}</strong> - {{ session.game.name }} ({{ session.end_time|date:"Y-m-d H:i:s" }})
     </li>
     {% endfor %}
 </ul>

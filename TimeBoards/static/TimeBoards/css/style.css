@@ -1,104 +1,163 @@
 body {
-    background-color: #f0f4f8; /* Very light grey background */
-    color: #2c3e50; /* Dark blue-grey text */
-    font-family: 'Arial', sans-serif; /* Ensuring a clean, readable font is used */
-}
-
-h1 {
-    color: #1abc9c; /* Teal for headers */
-    text-align: center; /* Center-aligning the header */
-    margin-bottom: 20px; /* Adding some space below the header */
-}
-
-table {
-    width: 100%; /* Full-width tables */
-    border-collapse: collapse; /* Ensures borders between cells are merged */
-    margin-bottom: 20px; /* Space below the table */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Adding subtle shadow */
-}
-
-th, td {
-    border: 1px solid #dee2e6; /* Light grey border for table cells */
-    padding: 12px; /* Padding inside cells for text */
-    text-align: left; /* Left-align text in cells */
-}
-
-th {
-    background-color: #e3f1f4; /* Light teal for header cells */
-    color: #2c3e50; /* Dark blue-grey text for header cells */
-}
-
-tr:nth-child(even) {
-    background-color: #f0f4f8; /* Alternate row color for better readability */
+    background-color: #1c1c1e;
+    color: #f5f5f5;
+    font-family: 'Arial', sans-serif;
 }
 
 .navbar {
-    margin-bottom: 20px; /* Space below the navbar */
+    background-color: #333;
 }
 
 .navbar-brand {
-    color: #fff !important; /* Ensure brand text is white */
+    font-weight: bold;
 }
 
 .nav-link {
-    color: #bdc3c7 !important; /* Light grey nav links */
+    color: #f5f5f5 !important;
 }
 
-.nav-link.active {
-    color: #fff !important; /* White color for active nav link */
+.nav-link:hover {
+    color: #ffa500 !important;
 }
 
 .container {
-    margin-top: 20px; /* Space at the top of the container */
+    background-color: #2c2c2e;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .btn-primary {
-    background-color: #e67e22; /* Orange for primary buttons */
-    border-color: #e67e22; /* Orange for primary buttons */
+    background-color: #ffa500;
+    border-color: #ffa500;
+}
+
+.btn-primary:hover {
+    background-color: #ff8c00;
+    border-color: #ff8c00;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
 }
 
 .btn-secondary {
-    background-color: #34495e; /* Dark blue-grey for secondary buttons */
-    border-color: #34495e; /* Dark blue-grey for secondary buttons */
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+.table {
+    color: #f5f5f5 !important;
+    background-color: #333 !important;  /* Change background to a dark shade for better contrast */
+}
+
+.table thead th {
+    background-color: #444 !important;
+    border-bottom: 2px solid #555 !important;
+    color: #ffffff !important;  /* Make table header text white for better visibility */
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #2c2c2e !important;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #444 !important;
+}
+
+.table td {
+    color: #ffffff !important;  /* Make table text white for better visibility */
+}
+
+.modal-content {
+    background-color: #333;
+    color: #f5f5f5;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .modal-header {
-    background-color: #1abc9c; /* Teal for modal header */
-    color: #fff; /* White text for modal header */
+    border-bottom: 1px solid #555;
 }
 
-.modal-header .btn-close {
-    color: #fff; /* White close button */
+.modal-footer {
+    border-top: 1px solid #555;
 }
 
-.modal-footer .btn-secondary {
-    background-color: #34495e; /* Dark blue-grey for modal footer */
+.form-select, .form-control {
+    background-color: #444;
+    color: #f5f5f5;
+    border: 1px solid #555;
 }
 
-#game-json {
-    background-color: #fff;
-    padding: 15px;
-    border-radius: 5px;
-    border: 1px solid #dee2e6;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Adding subtle shadow */
+.form-select:focus, .form-control:focus {
+    background-color: #444;
+    color: #f5f5f5;
+    border-color: #ffa500;
+    box-shadow: 0 0 0 0.2rem rgba(255, 165, 0, 0.25);
 }
 
-#game-json ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+label {
+    color: #f5f5f5;
+    font-weight: bold;
 }
 
-#game-json li {
-    margin-bottom: 3px;
+.profile-card, .achievements-card, .sessions-card, .leaderboard-card {
+    background-color: #333;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-.card {
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Adding subtle shadow */
+.profile-pic {
+    width: 150px;
+    height: 150px;
 }
 
 .card-title {
-    color: #1abc9c; /* Teal for card titles */
+    color: #f5f5f5;
+}
+
+.card-text {
+    color: #f5f5f5;
+}
+
+.card-header {
+    background-color: #444;
+    color: #f5f5f5;
+    border-bottom: 2px solid #555;
+}
+
+.card-body {
+    color: #f5f5f5;
+}
+
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    border-radius: 50%;
+}
+
+.thead-dark th {
+    background-color: #333 !important;
+    border-bottom: 2px solid #555 !important;
+    color: #ffffff !important;
+}
+
+.table td {
+    vertical-align: middle !important;
+    color: #ffffff !important;
 }

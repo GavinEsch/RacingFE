@@ -15,7 +15,15 @@ def homepage(request):
         key = (entry.track, entry.car, entry.game)
         if key not in top_times:
             top_times[key] = entry
-    return render(request, 'TimeBoards/homepage.html', {'entries': top_times.values()})
+    
+    recent_sessions = Session.objects.all().order_by('-end_time')[:5]
+    recent_achievements = UserAchievement.objects.select_related('user', 'achievement').order_by('-id')[:5]
+
+    return render(request, 'TimeBoards/homepage.html', {
+        'entries': top_times.values(),
+        'recent_sessions': recent_sessions,
+        'recent_achievements': recent_achievements,
+    })
 
 def games(request):
     if request.method == 'POST':
@@ -55,12 +63,17 @@ def tracks(request, game_id):
     game_settings = json.loads(game.settings) if isinstance(game.settings, str) else game.settings
     game_settings = game_settings.get('gameSettings', {})
 
+    recent_telemetry_data = TelemetryData.objects.filter(game=game).order_by('-lap_time')[:5]
+    recent_comments = Comment.objects.filter(game=game).order_by('-created_at')[:5]
+
     return render(request, 'TimeBoards/tracks.html', {
         'game': game,
         'tracks_with_cars': tracks_with_cars,
         'form': form,
         'car_form': car_form,
-        'game_settings': game_settings
+        'game_settings': game_settings,
+        'recent_telemetry_data': recent_telemetry_data,
+        'recent_comments': recent_comments
     })
 
 def add_car(request, game_id):
@@ -80,8 +93,6 @@ def add_car(request, game_id):
 
 def people(request):
     all_people = User.objects.all()
-    print("All people:", all_people)  # Debug: Print all users to the console
-    print("Database config:", settings.DATABASES)
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST, request.FILES)
         if form.is_valid():
@@ -91,13 +102,36 @@ def people(request):
             print(form.errors)  # Debug: Print form errors to the console
     else:
         form = CustomUserCreationForm()
-    return render(request, 'TimeBoards/people.html', {'people': all_people, 'form': form})
+
+    recent_achievements = UserAchievement.objects.select_related('user', 'achievement').order_by('-id')[:5]
+    recent_sessions = Session.objects.all().order_by('-end_time')[:5]
+
+    return render(request, 'TimeBoards/people.html', {
+        'people': all_people,
+        'form': form,
+        'recent_achievements': recent_achievements,
+        'recent_sessions': recent_sessions
+    })
 
 
 def person_times(request, person_id):
     person = get_object_or_404(User, id=person_id)
     times = LeaderboardEntry.objects.filter(user=person).order_by('time')
-    return render(request, 'TimeBoards/person_times.html', {'person': person, 'times': times})
+    session_form = SessionForm()
+
+    if request.method == 'POST':
+        session_form = SessionForm(request.POST)
+        if session_form.is_valid():
+            session = session_form.save(commit=False)
+            session.user = person
+            session.save()
+            return redirect('person_times', person_id=person.id)
+    
+    return render(request, 'TimeBoards/person_times.html', {
+        'person': person,
+        'times': times,
+        'session_form': session_form
+    })
 
 def track_times(request, game_id, track_id, car_id):
     game = get_object_or_404(Game, id=game_id)
@@ -187,3 +221,29 @@ def add_comment(request):
     else:
         form = CommentForm()
     return render(request, 'TimeBoards/add_comment.html', {'form': form})
+
+
+# Add Session View
+def add_session(request, person_id):
+    person = get_object_or_404(User, id=person_id)
+    if request.method == 'POST':
+        form = SessionForm(request.POST)
+        if form.is_valid():
+            session = form.save(commit=False)
+            session.user = person
+            session.save()
+            return redirect('person_times', person_id=person.id)
+    else:
+        form = SessionForm()
+    return render(request, 'TimeBoards/add_session.html', {'form': form, 'person': person})
+
+# Session Details View
+def session_details(request, session_id):
+    session = get_object_or_404(Session, id=session_id)
+    telemetry_data = TelemetryData.objects.filter(session=session).order_by('lap_time')
+    return render(request, 'TimeBoards/session_details.html', {'session': session, 'telemetry_data': telemetry_data})
+
+def telemetry_data(request, session_id, track_id, car_id):
+    telemetry_data = get_object_or_404(TelemetryData, session_id=session_id, track_id=track_id, car_id=car_id)
+    return render(request, 'TimeBoards/telemetry_data.html', {'telemetry_data': telemetry_data})
+

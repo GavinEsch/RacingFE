@@ -1,0 +1,13 @@
+
+<h4>Session Details</h4>
+<p><strong>Game:</strong> {{ session.game.name }}</p>
+<p><strong>End Time:</strong> {{ session.end_time }}</p>
+<h5>Telemetry Data</h5>
+<ul class="list-group">
+    {% for data in telemetry_data %}
+    <li class="list-group-item">
+        <strong>Track:</strong> {{ data.track.name }} - <strong>Car:</strong> {{ data.car.name }} - <strong>Lap Time:</strong> {{ data.lap_time }}
+        <button type="button" class="btn btn-primary btn-sm float-end telemetry-link" data-track-id="{{ data.track.id }}" data-car-id="{{ data.car.id }}" data-session-id="{{ session.id }}">View Telemetry</button>
+    </li>
+    {% endfor %}
+</ul>

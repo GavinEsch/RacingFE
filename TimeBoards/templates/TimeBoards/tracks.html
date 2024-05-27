@@ -2,40 +2,62 @@
 {% load json_extras %}
 
 {% block content %}
-<div class="row">
-    <div class="col-md-8">
-        <h1>Tracks for {{ game.name }}</h1>
-        <button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addTrackModal">Add Track</button>
-        <button type="button" class="btn btn-secondary mb-3" data-bs-toggle="modal" data-bs-target="#addCarModal">Add Car</button>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Track Name</th>
-                    <th>Car</th>
-                    <th>View Times</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for track, car in tracks_with_cars %}
-                <tr>
-                    <td>{{ track.name }}</td>
-                    <td>{{ car.name }}</td>
-                    <td>
-                        <a href="{% url 'track_times' game.id track.id car.id %}" class="btn btn-primary">View Times</a>
-                    </td>
-                </tr>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8">
+            <h1>Tracks for {{ game.name }}</h1>
+            <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addTrackModal">Add Track</button>
+            <button type="button" class="btn btn-secondary mb-3" data-bs-toggle="modal" data-bs-target="#addCarModal">Add Car</button>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Track Name</th>
+                            <th>Car</th>
+                            <th>View Times</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for track, car in tracks_with_cars %}
+                        <tr>
+                            <td>{{ track.name }}</td>
+                            <td>{{ car.name }}</td>
+                            <td>
+                                <a href="{% url 'track_times' game.id track.id car.id %}" class="btn btn-primary">View Times</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <p>Total tracks: {{ tracks_with_cars|length }}</p>
+        </div>
+        <div class="col-md-4">
+            <h2>Game Details</h2>
+            <div id="game-json">
+                <div><strong>ID:</strong> {{ game.id }}</div>
+                <div><strong>Name:</strong> {{ game.name }}</div>
+                <div><strong>Game Settings:</strong></div>
+                <div>{{ game_settings|render_json|safe }}</div>
+            </div>
+
+            <h2>Recent Telemetry Data</h2>
+            <ul class="list-group">
+                {% for telemetry in recent_telemetry_data %}
+                <li class="list-group-item">
+                    <strong>{{ telemetry.user.username }}</strong> - Speed: {{ telemetry.speed }} - Lap Time: {{ telemetry.lap_time }}
+                </li>
                 {% endfor %}
-            </tbody>
-        </table>
-        <p>Total tracks: {{ tracks_with_cars|length }}</p>
-    </div>
-    <div class="col-md-4">
-        <h2>Game Details</h2>
-        <div id="game-json">
-            <div><strong>ID:</strong> {{ game.id }}</div>
-            <div><strong>Name:</strong> {{ game.name }}</div>
-            <div><strong>Game Settings:</strong></div>
-            <div>{{ game_settings|render_json|safe }}</div>
+            </ul>
+
+            <h2>Recent Comments</h2>
+            <ul class="list-group">
+                {% for comment in recent_comments %}
+                <li class="list-group-item">
+                    <strong>{{ comment.user.username }}</strong>: {{ comment.content }}
+                </li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
 </div>
